@@ -8,7 +8,7 @@
         :root { --primary: #2c3e50; --secondary: #27ae60; --accent: #e74c3c; }
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 15px; margin: 0; }
         .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--primary); font-size: 22px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+        h2 { text-align: center; color: var(--primary); font-size: 20px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #444; }
         select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
@@ -26,30 +26,36 @@
     <h2>Vehicle Duty Calculator (2026)</h2>
     
     <div class="input-group">
-        <label>වාහන කාණ්ඩය සහ HS Code:</label>
+        <label>වාහන කාණ්ඩය (HS Code):</label>
         <select id="hsCode">
             <option value="">-- තෝරන්න --</option>
-            <optgroup label="Petrol Cars (Below 3Y)">
+            <optgroup label="Petrol Cars">
                 <option value="8703.21.69" data-type="unit" data-rate="1992000">8703.21.69 - Below 1000cc (Unit)</option>
                 <option value="8703.21.69_cc" data-type="cc" data-rate="2450">8703.21.69 - Below 1000cc (per CC)</option>
                 <option value="8703.22.50" data-type="cc" data-rate="3850">8703.22.50 - 1000-1300cc</option>
                 <option value="8703.22.50_15" data-type="cc" data-rate="4450">8703.22.50 - 1300-1500cc</option>
                 <option value="8703.23.52" data-type="cc" data-rate="5150">8703.23.52 - 1500-1600cc</option>
+                <option value="8703.23.55" data-type="cc" data-rate="6400">8703.23.55 - 1600-1800cc</option>
+                <option value="8703.23.59" data-type="cc" data-rate="7250">8703.23.59 - 1800-2000cc</option>
             </optgroup>
-            <optgroup label="Hybrid Cars (Below 3Y)">
+            <optgroup label="Hybrid Cars">
                 <option value="8703.40.28" data-type="unit" data-rate="1810900">8703.40.28 - Below 1000cc</option>
                 <option value="8703.40.35" data-type="cc" data-rate="2750">8703.40.35 - 1000-1300cc</option>
                 <option value="8703.40.35_15" data-type="cc" data-rate="3450">8703.40.35 - 1300-1500cc</option>
+                <option value="8703.40.51" data-type="cc" data-rate="4800">8703.40.51 - 1500-1600cc</option>
+                <option value="8703.40.55" data-type="cc" data-rate="6100">8703.40.55 - 1600-1800cc</option>
             </optgroup>
-            <optgroup label="Diesel Cars (Below 3Y)">
+            <optgroup label="Diesel Cars">
+                <option value="8703.31.30" data-type="cc" data-rate="3600">8703.31.30 - Hearses 1500cc</option>
                 <option value="8703.31.70" data-type="cc" data-rate="5550">8703.31.70 - Below 1500cc</option>
+                <option value="8703.32.30" data-type="cc" data-rate="4800">8703.32.30 - Hearses 1500-2500cc</option>
                 <option value="8703.32.52" data-type="cc" data-rate="6950">8703.32.52 - 1500-1600cc</option>
             </optgroup>
-            <optgroup label="Electric Cars">
+            <optgroup label="Electric (EV)">
                 <option value="8703.80.31" data-type="kw" data-rate="18100">8703.80.31 - Below 50KW (Below 1Y)</option>
-                <option value="8703.80.31_old" data-type="kw" data-rate="36200">8703.80.31 - Below 50KW (1-3Y)</option>
+                <option value="8703.80.32" data-type="kw" data-rate="24100">8703.80.32 - 50-100KW (Below 1Y)</option>
             </optgroup>
-            <optgroup label="Trucks & Vans">
+            <optgroup label="Trucks & Cabs">
                 <option value="8704.21.41" data-type="unit" data-rate="724350">8704.21.41 - Diesel Truck < 800kg</option>
                 <option value="8704.21.91" data-type="unit" data-rate="6036300">8704.21.91 - Diesel Double Cab</option>
                 <option value="8704.31.91" data-type="unit" data-rate="6036300">8704.31.91 - Petrol Double Cab</option>
@@ -58,7 +64,7 @@
     </div>
 
     <div class="input-group">
-        <label>CIF වටිනාකම (විදේශ මුදලින්):</label>
+        <label>CIF වටිනාකම (Foreign Currency):</label>
         <input type="number" id="cif" placeholder="JPY / USD / GBP ඇතුළත් කරන්න">
     </div>
 
@@ -69,10 +75,10 @@
 
     <div class="input-group">
         <label>එන්ජින් ධාරිතාව (CC) / බලය (KW):</label>
-        <input type="number" id="capacity" placeholder="Ex: 658 or 45">
+        <input type="number" id="capacity" placeholder="Ex: 658 or 1300">
     </div>
 
-    <button onclick="calculate()">බදු ගණනය කරන්න</button>
+    <button type="button" onclick="calculateDuty()">බදු ගණනය කරන්න</button>
 
     <div id="result">
         <div class="res-row"><span>Value (NCY):</span> <span id="rNcy">0.00</span></div>
@@ -86,62 +92,64 @@
     </div>
 
     <div class="footer">
-        Data based on Gazette 2421/44 & Sasiri Associates Records
+        Data updated: 2026.03.14 | Sasiri Associates
     </div>
 </div>
 
 <script>
-function calculate() {
-    const cifInput = document.getElementById('cif').value;
-    const exRateInput = document.getElementById('exRate').value;
-    const capInput = document.getElementById('capacity').value;
-    const option = document.getElementById('hsCode').selectedOptions[0];
+function calculateDuty() {
+    const cifVal = document.getElementById('cif').value;
+    const exRateVal = document.getElementById('exRate').value;
+    const capVal = document.getElementById('capacity').value;
+    const hsSelect = document.getElementById('hsCode');
+    const option = hsSelect.options[hsSelect.selectedIndex];
     
-    if (!cifInput || !exRateInput || !option.value) {
+    if (!cifVal || !exRateVal || !option.value) {
         alert("කරුණාකර සියලු විස්තර ඇතුළත් කරන්න.");
         return;
     }
 
-    const cif = parseFloat(cifInput);
-    const exRate = parseFloat(exRateInput);
-    const cap = parseFloat(capInput) || 0;
+    const cif = parseFloat(cifVal);
+    const exRate = parseFloat(exRateVal);
+    const cap = parseFloat(capVal) || 0;
 
-    [span_0](start_span)// 1. Value NCY calculation[span_0](end_span)
+    // 1. Value NCY
     const ncy = cif * exRate;
     
-    [span_1](start_span)// 2. CID (20% based on your correction)[span_1](end_span)
+    // 2. CID (20%) & SUR (50% of CID)
     const cid = ncy * 0.20;
-    
-    [span_2](start_span)// 3. SUR (50% of CID)[span_2](end_span)
     const sur = cid * 0.50;
     
-    [span_3](start_span)// 4. XID Calculation[span_3](end_span)
+    // 3. XID Calculation
     const rate = parseFloat(option.getAttribute('data-rate'));
     const type = option.getAttribute('data-type');
     let xid = 0;
-    if (type === "unit") xid = rate;
-    else if (type === "cc" || type === "kw") xid = rate * cap;
+    if (type === "unit") {
+        xid = rate;
+    } else {
+        xid = rate * cap;
+    }
 
-    [span_4](start_span)// 5. VAT Calculation (Base = 110% of NCY + CID + SUR + XID)[span_4](end_span)
-    const vatBase = (ncy * 1.10) + cid + sur + xid;
+    // 4. VAT Calculation (Base = 110% of NCY + CID + SUR + XID)
+    const vatBase = (ncy * 1.1) + cid + sur + xid;
     const vat = vatBase * 0.18;
 
-    // 6. Fees based on CusDec and PDF
+    // 5. Fixed Fees
     const vel = 15000;
     const other = 1750; // COM/EXM/SEL
     
     const total = cid + sur + xid + vat + vel + other;
 
-    // Formatting numbers
-    const fmt = (num) => num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    // Displaying Results
+    const f = (n) => n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     
-    document.getElementById('rNcy').innerText = fmt(ncy);
-    document.getElementById('rCid').innerText = fmt(cid);
-    document.getElementById('rSur').innerText = fmt(sur);
-    document.getElementById('rXid').innerText = fmt(xid);
-    document.getElementById('rVatBase').innerText = fmt(vatBase);
-    document.getElementById('rVat').innerText = fmt(vat);
-    document.getElementById('rTotal').innerText = "Rs. " + fmt(total);
+    document.getElementById('rNcy').innerText = f(ncy);
+    document.getElementById('rCid').innerText = f(cid);
+    document.getElementById('rSur').innerText = f(sur);
+    document.getElementById('rXid').innerText = f(xid);
+    document.getElementById('rVatBase').innerText = f(vatBase);
+    document.getElementById('rVat').innerText = f(vat);
+    document.getElementById('rTotal').innerText = "Rs. " + f(total);
     
     document.getElementById('result').style.display = 'block';
 }
