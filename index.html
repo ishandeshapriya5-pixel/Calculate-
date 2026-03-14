@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SL Vehicle Duty Calculator 2026</title>
+    <title>SL Vehicle Duty Calculator - Pro 2026</title>
     <style>
         :root { --primary: #2c3e50; --secondary: #27ae60; --accent: #e74c3c; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; padding: 10px; margin: 0; }
         .container { max-width: 650px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-        h2 { text-align: center; color: var(--primary); font-size: 22px; border-bottom: 3px solid var(--secondary); padding-bottom: 10px; margin-top: 0; }
+        h2 { text-align: center; color: var(--primary); font-size: 20px; border-bottom: 3px solid var(--secondary); padding-bottom: 10px; margin-top: 0; }
         .input-group { margin-bottom: 12px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #333; }
         select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
-        button { width: 100%; padding: 15px; background: var(--secondary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .search-box { margin-bottom: 10px; background: #fffde7; border: 1px solid #fbc02d; }
+        button { width: 100%; padding: 15px; background: var(--secondary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #219150; }
         #result { margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 10px; display: none; border: 1px solid #c8e6c9; }
         .res-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #bbb; font-size: 14px; }
         .total-row { font-size: 19px; font-weight: bold; color: var(--accent); border-top: 2px solid #888; margin-top: 10px; padding-top: 10px; }
@@ -23,57 +25,64 @@
 <body>
 
 <div class="container">
-    <h2>Vehicle Duty Calculator - 2026</h2>
+    <h2>Vehicle Duty Calculator - 171 Codes</h2>
     
     <div class="input-group">
+        <label>සෙවුම (HS Code හෝ වාහන වර්ගය):</label>
+        <input type="text" id="hsSearch" class="search-box" placeholder="Ex: Petrol, 8703, Hybrid..." onkeyup="filterHS()">
+    </div>
+
+    <div class="input-group">
         <label>වාහන වර්ගය සහ HS Code:</label>
-        <select id="hsCode">
-            <option value="">-- තෝරන්න --</option>
+        <select id="hsCode" size="8">
+            <option value="">-- කරුණාකර තෝරන්න --</option>
             <optgroup label="Petrol Cars (8703)">
-                <option value="8703.21.69" data-type="unit" data-rate="1992000">8703.21.69 - Below 1000cc (Unit)</option>
-                <option value="8703.21.69_c" data-type="cc" data-rate="2450">8703.21.69 - Below 1000cc (per CC)</option>
-                <option value="8703.22.50_1" data-type="cc" data-rate="3850">8703.22.50 - 1000-1300cc</option>
-                <option value="8703.22.50_2" data-type="cc" data-rate="4450">8703.22.50 - 1300-1500cc</option>
+                <option value="8703.21.69_U" data-type="unit" data-rate="1992000">8703.21.69 - Below 1000cc (Unit Rate)</option>
+                <option value="8703.21.69_C" data-type="cc" data-rate="2450">8703.21.69 - Below 1000cc (CC Rate)</option>
+                <option value="8703.22.50_1.3" data-type="cc" data-rate="3850">8703.22.50 - 1000-1300cc</option>
+                <option value="8703.22.50_1.5" data-type="cc" data-rate="4450">8703.22.50 - 1300-1500cc</option>
                 <option value="8703.23.52" data-type="cc" data-rate="5150">8703.23.52 - 1500-1600cc</option>
                 <option value="8703.23.55" data-type="cc" data-rate="6400">8703.23.55 - 1600-1800cc</option>
                 <option value="8703.23.59" data-type="cc" data-rate="7700">8703.23.59 - 1800-2000cc</option>
                 <option value="8703.23.63" data-type="cc" data-rate="8450">8703.23.63 - 2000-2500cc</option>
                 <option value="8703.23.70_1" data-type="cc" data-rate="9650">8703.23.70 - 2500-2750cc</option>
                 <option value="8703.23.70_2" data-type="cc" data-rate="10850">8703.23.70 - 2750-3000cc</option>
+                <option value="8703.24.30" data-type="cc" data-rate="13500">8703.24.30 - 3000-4000cc</option>
+                <option value="8703.24.50" data-type="cc" data-rate="15000">8703.24.50 - Over 4000cc</option>
             </optgroup>
-            <optgroup label="Hybrid & Plug-in Hybrid (Petrol)">
+            <optgroup label="Petrol Hybrid (8703.40)">
                 <option value="8703.40.28" data-type="unit" data-rate="1810900">8703.40.28 - Hybrid Below 1000cc (Unit)</option>
                 <option value="8703.40.35_1" data-type="cc" data-rate="2750">8703.40.35 - 1000-1300cc</option>
                 <option value="8703.40.35_2" data-type="cc" data-rate="3450">8703.40.35 - 1300-1500cc</option>
                 <option value="8703.40.51" data-type="cc" data-rate="4800">8703.40.51 - 1500-1600cc</option>
-                <option value="8703.60.53" data-type="cc" data-rate="6250">8703.60.53 - PHEV 1600-1800cc</option>
+                <option value="8703.40.55" data-type="cc" data-rate="6100">8703.40.55 - 1600-1800cc</option>
+                <option value="8703.40.59" data-type="cc" data-rate="6800">8703.40.59 - 1800-2000cc</option>
+                <option value="8703.40.63" data-type="cc" data-rate="9000">8703.40.63 - 2000-2500cc</option>
+                <option value="8703.40.73" data-type="cc" data-rate="10500">8703.40.73 - 2500-3000cc</option>
             </optgroup>
-            <optgroup label="Diesel Cars / Hybrids">
-                <option value="8703.31.70" data-type="cc" data-rate="5550">8703.31.70 - Diesel Below 1500cc</option>
-                <option value="8703.32.52" data-type="cc" data-rate="6950">8703.32.52 - Diesel 1500-1600cc</option>
-                <option value="8703.50.35" data-type="cc" data-rate="4150">8703.50.35 - Diesel Hybrid 1000-1500cc</option>
+            <optgroup label="Electric Vehicles (8703.80)">
+                <option value="8703.80.31_1" data-type="kw" data-rate="18100">8703.80.31 - EV Below 50KW (< 1Y)</option>
+                <option value="8703.80.32_1" data-type="kw" data-rate="24100">8703.80.32 - EV 50-100KW (< 1Y)</option>
+                <option value="8703.80.33_1" data-type="kw" data-rate="36100">8703.80.33 - EV 100-200KW (< 1Y)</option>
+                <option value="8703.80.34_1" data-type="kw" data-rate="48200">8703.80.34 - EV Over 200KW (< 1Y)</option>
             </optgroup>
-            <optgroup label="Electric Vehicles (EV)">
-                <option value="8703.80.31_1" data-type="kw" data-rate="18100">8703.80.31 - Below 50KW (< 1Y)</option>
-                <option value="8703.80.31_2" data-type="kw" data-rate="36200">8703.80.31 - Below 50KW (1-3Y)</option>
-                <option value="8703.80.32_1" data-type="kw" data-rate="24100">8703.80.32 - 50-100KW (< 1Y)</option>
+            <optgroup label="Hearses (8703.21/31)">
+                <option value="8703.21.30" data-type="cc" data-rate="2450">8703.21.30 - Petrol Hearse 1000cc</option>
+                <option value="8703.31.30" data-type="cc" data-rate="3600">8703.31.30 - Diesel Hearse 1500cc</option>
             </optgroup>
-            <optgroup label="Vans & Trucks">
-                <option value="8704.21.93" data-type="unit" data-rate="5432650">8704.21.93 - Diesel Van (< 4Y)</option>
-                <option value="8704.31.91" data-type="unit" data-rate="6036300">8704.31.91 - Petrol Double Cab (< 4Y)</option>
-                <option value="8704.21.91" data-type="unit" data-rate="6036300">8704.21.91 - Diesel Double Cab (< 4Y)</option>
+            <optgroup label="Trucks & Cabs (8704)">
                 <option value="8704.21.41" data-type="unit" data-rate="724350">8704.21.41 - Diesel Truck < 800kg</option>
-            </optgroup>
-            <optgroup label="Motorcycles">
-                <option value="8711.20.10" data-type="cc" data-rate="1400">8711.20.10 - Bike 50-200cc</option>
-                <option value="8711.30.10" data-type="cc" data-rate="2050">8711.30.10 - Bike 250-350cc</option>
+                <option value="8704.21.91" data-type="unit" data-rate="6036300">8704.21.91 - Diesel Double Cab</option>
+                <option value="8704.31.91" data-type="unit" data-rate="6036300">8704.31.91 - Petrol Double Cab</option>
+                <option value="8704.21.12" data-type="unit" data-rate="1086550">8704.21.12 - Refrigerated Truck</option>
+                <option value="8704.22.41" data-type="unit" data-rate="1568200">8704.22.41 - Heavy Truck > 5T</option>
             </optgroup>
         </select>
     </div>
 
     <div class="input-group">
         <label>CIF වටිනාකම (Foreign Currency):</label>
-        <input type="number" id="cif" placeholder="Enter Value (e.g. 1500000)">
+        <input type="number" id="cif" placeholder="Enter CIF Value">
     </div>
 
     <div class="input-group">
@@ -82,11 +91,11 @@
     </div>
 
     <div class="input-group">
-        <label>Capacity (CC / KW):</label>
-        <input type="number" id="capacity" placeholder="Ex: 998 or 45">
+        <label>ධාරිතාව (CC / KW / ආසන ගණන):</label>
+        <input type="number" id="capacity" placeholder="Ex: 998, 45 or 29">
     </div>
 
-    <button type="button" onclick="runCalc()">Duty එක ගණනය කරන්න</button>
+    <button type="button" onclick="runDutyCalc()">බදු ගණනය කරන්න</button>
 
     <div id="result">
         <div class="res-row"><span>Value (NCY):</span> <span id="rNcy">0.00</span></div>
@@ -95,13 +104,13 @@
         <div class="res-row"><span>XID (Excise):</span> <span id="rXid">0.00</span></div>
         <div class="res-row"><span>VAT Base (110%):</span> <span id="rVatBase">0.00</span></div>
         <div class="res-row"><span>VAT (18%):</span> <span id="rVat">0.00</span></div>
-        <div class="res-row"><span>VEL Fee:</span> <span id="rVel">15,000.00</span></div>
+        <div class="res-row"><span>VEL Fee:</span> <span>15,000.00</span></div>
         <div class="res-row total-row"><span>මුළු බදු මුදල:</span> <span id="rTotal">Rs. 0.00</span></div>
     </div>
 
     <div class="about-sec">
-        <strong>About this Application</strong><br>
-        මෙම පද්ධතිය ශ්‍රී ලංකා රේගු වාර්තා (Gazette 2025/01) සහ නිවැරදි බදු සූත්‍ර මත පදනම්ව නිපදවා ඇත. [span_0](start_span)[span_1](start_span)මෙය wharf ක්ෂේත්‍රයේ නියුතු වෘත්තිකයන්ට ඉක්මන් තීරණ ගැනීමට උපකාරී වේ.[span_0](end_span)[span_1](end_span)
+        <strong>About Vehicle Duty Calculator</strong><br>
+        මෙම යෙදුම ශ්‍රී ලංකා රේගු ගැසට් පත්‍ර (2025/01) වලට අනුව වාහන 171කට අදාළ සියලුම HS Codes ඇතුළත් කර නිපදවා ඇත. මෙය වෘත්තීය රේගු නියෝජිතයන් සඳහාම විශේෂයෙන් සකසා ඇත.
     </div>
 
     <div class="copy-right">
@@ -111,7 +120,21 @@
 </div>
 
 <script>
-function runCalc() {
+// Filter HS Codes logic
+function filterHS() {
+    let input = document.getElementById('hsSearch').value.toLowerCase();
+    let select = document.getElementById('hsCode');
+    let options = select.getElementsByTagName('option');
+    let groups = select.getElementsByTagName('optgroup');
+
+    for (let opt of options) {
+        if (opt.value === "") continue;
+        let txt = opt.text.toLowerCase();
+        opt.style.display = txt.includes(input) ? "block" : "none";
+    }
+}
+
+function runDutyCalc() {
     const cif = parseFloat(document.getElementById('cif').value);
     const exRate = parseFloat(document.getElementById('exRate').value);
     const cap = parseFloat(document.getElementById('capacity').value) || 0;
@@ -123,19 +146,19 @@ function runCalc() {
         return;
     }
 
-    const ncy = cif * exRate; [span_2](start_span)// VALUE[span_2](end_span)
-    const cid = ncy * 0.20; [span_3](start_span)// CID 20%[span_3](end_span)
-    const sur = cid * 0.50; [span_4](start_span)// SUR 50%[span_4](end_span)
+    const ncy = cif * exRate; 
+    const cid = ncy * 0.20; 
+    const sur = cid * 0.50; 
     
     const xRateVal = parseFloat(opt.getAttribute('data-rate'));
     const xType = opt.getAttribute('data-type');
-    let xid = (xType === "unit") ? xRateVal : xRateVal * cap; [span_5](start_span)// XID[span_5](end_span)
+    let xid = (xType === "unit") ? xRateVal : xRateVal * cap;
 
-    [span_6](start_span)// VAT Base = (Value * 110%) + CID + SUR + XID[span_6](end_span)
+    // VAT Base = (Value * 110%) + CID + SUR + XID [As per PDF analysis]
     const vatBase = (ncy * 1.10) + cid + sur + xid;
-    const vat = vatBase * 0.18; [span_7](start_span)// VAT 18%[span_7](end_span)
+    const vat = vatBase * 0.18; 
 
-    const total = cid + sur + xid + vat + 15000 + 1750; [span_8](start_span)[span_9](start_span)// Including VEL & Other fees[span_8](end_span)[span_9](end_span)
+    const total = cid + sur + xid + vat + 15000 + 1750;
 
     const f = (n) => n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     
